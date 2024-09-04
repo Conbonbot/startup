@@ -1,1 +1,1 @@
-This is a conflict file
+This is *not* a conflict file
