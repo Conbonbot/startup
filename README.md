@@ -7,11 +7,11 @@ There are many people today who don't know much, or anything, about the stock ma
 
 ### Design
 
-
+Here is a rough sketch of the application itself in the home page.
 ![Here is a rough sketch of the application itself in the home page.](image/README/example_home_page.png)
 
 
-
+And here is how the users connect with the backend server and the stock market API.
 ![And how the frontend connects with the backend](image/README/example_backend.png)
 
 ### Key Features
