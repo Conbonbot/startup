@@ -33,3 +33,12 @@ The following is how I will use the required technologies for this website
     - Showing market information
 * **Database/login** - Stores users information, such as logins, stocks, and profit. All passwords will be encrypted with BCrypt
 * **WebSocket** - Realtime data from the stock market (changes in market prices)
+
+### HTML Deliverable
+The following is the structure of the HTML used in the website
+- [x] **4 HTML pages**: Home, Trade, Learn, and Login
+- [ ] **Header/Footer**: TODO header and footer HTMl files are in layouts folder (loaded by JS)
+- [x] **Text**: Stocks are represented by a textual description, including different important aspects
+- [] **Images**: TODO A favicon image is used for the website, as well as historic stock pictures
+- [] **DB/Login**: TODO Input boxes for ticker symbols, user login, as well as display what stocks the user has.
+- [] **WebSocket**: The market price of a stock, alongside current price of all the user's stocks are displayed in realtime.
