@@ -1,3 +1,0 @@
-This is not a conflict file!!!!!
-
-Or is it?!
