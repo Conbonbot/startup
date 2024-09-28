@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <title>Log in</title>
+    <link rel="icon" href="/startup/image/pages/favicon.ico" />
   </head>
   <body>
     <header>
@@ -11,12 +12,21 @@
           <menu>
             <li><a href="trade.html">Trade</a></li>
             <li><a href="learn.html">Learn</a></li>
+            <!-- TODO: Change for login/signup/signout-->
             <li><a href="login.html">login</a></li>
           </menu>
         </nav>
       </header>
     <h1>Log in</h1>
-    
+    <form action="/startup/index.html">
+      <label for="username">Username: </label>
+      <input type="text" id="username" name="username" required /><br>
+
+      <label for="password">Password: </label>
+      <input type="password" id="password" name="password" required /><br>
+
+      <input type="submit" value="Submit" />
+    </form>
   </body>
 
   <!-- TODO: Put footer in seperate _footer.html file -->

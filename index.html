@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <title>Stock Trader</title>
+    <link rel="icon" href="/startup/image/pages/favicon.ico" />
   </head>
   <body>
     <header>
@@ -11,11 +12,36 @@
         <menu>
           <li><a href="static_pages/trade.html">Trade</a></li>
           <li><a href="static_pages/learn.html">Learn</a></li>
+          <!-- TODO: Change for login/signup/signout-->
           <li><a href="static_pages/login.html">login</a></li>
           </menu>
       </nav>
     </header>
-    <h1>Welcome to the Stock Trader!</h1>
+    <!-- Main section -->
+    <main>
+      <h1>Welcome to the Stock Trader, <b>Username</b>!</h1>
+      <h2>Below are the stocks you currently hold, with current profit/loss</h2>
+      <table>
+        <tr>
+          <th>Stock</th>
+          <th>Shares</th>
+          <th>Price ($)</th>
+          <th>Profit ($)</th>
+        </tr>
+        <tr>
+          <td>NVDA</td>
+          <td>2</td>
+          <td>121.40</td>
+          <td>251.42</td>
+        </tr>
+        <tr>
+          <td>IONQ</td>
+          <td>5</td>
+          <td>9.71</td>
+          <td>-4.21</td>
+        </tr>
+      </table>
+    </main> 
   </body>
   <!-- TODO: Put footer in seperate _footer.html file -->
   <footer>
