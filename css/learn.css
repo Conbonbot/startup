@@ -1,0 +1,38 @@
+.examples-with-pictures {
+    flex: 1 0 auto;
+    display: flex;
+    max-height: 50%;
+    justify-content: center;
+}
+
+.stock-information {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card {
+    text-align: center;
+}
+
+.card-img-top {
+    height: 45%;
+}
+
+@media (max-height: 850px){
+    header {
+        display: none;
+    }
+    .examples-with-pictures {
+        font-size: 2vh;
+    }
+    footer {
+        display: none;
+    }
+}
+
+@media (max-width: 800px){
+    .examples-with-pictures {
+        font-size: 1.5vw;
+    }
+}

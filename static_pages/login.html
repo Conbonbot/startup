@@ -1,36 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Log in</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
     <link rel="icon" href="../image/pages/favicon.ico" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/login.css" />
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </head>
   <body>
+    <!-- Header -->
     <header>
-        <!-- TODO: put header in seperate _header.html file -->
-        <h3><a href="../index.html">Home Page</a></h3>
-        <nav>
-          <menu>
-            <li><a href="trade.html">Trade</a></li>
-            <li><a href="learn.html">Learn</a></li>
-            <!-- TODO: Change for login/signup/signout-->
-            <li><a href="login.html">login</a></li>
-          </menu>
-        </nav>
-      </header>
-    <h1>Log in</h1>
-    <form action="/startup/index.html">
-      <label for="username">Username: </label>
-      <input type="text" id="username" name="username" required /><br>
-
-      <label for="password">Password: </label>
-      <input type="password" id="password" name="password" required /><br>
-
-      <input type="submit" value="Submit" />
-    </form>
+      <nav class="navbar navbar-expand bg-dark" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="../index.html">
+            <img src="../image/pages/favicon.ico" alt="Logo">
+            Stock Trader
+          </a>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="learn.html">Learn</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="trade.html">Trade</a>
+              </li>
+            </ul>
+          </div>
+          <a class="login text-light no-decoration" href="login.html">Login</a>
+        </div>
+      </nav>
+    </header>
+    <!-- Main information-->
+    <main class="container-fluid bg-secondary text-center">
+      <section class="login-form">
+        <h2>Welcome to the Stock Trader</h2>
+        <form method="get" action="../index.html">
+          <!-- Ticker, amount, buy/sell -->
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="username">Username</span>
+            <input type="text" class="form-control" id="username" aria-describedby="usernameRequired" required>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="password">password</span>
+            <input type="password" class="form-control" id="password"  aria-describedby="passwordRequired" required>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary" type="submit">Log in</button>
+            <button class="btn btn-primary" type="submit">Register</button>
+          </div>
+        </form>
+      </section>
+    </main>
   </body>
 
   <!-- TODO: Put footer in seperate _footer.html file -->
-  <footer>
-    <a href="https://github.com/Conbonbot/startup">Github</a>
+  <footer class="bg-dark">
+    <div class="container-fluid">
+      <a class="text-grey" href="https://github.com/Conbonbot/startup">Github</a>
+    </div>
   </footer>
 </html>

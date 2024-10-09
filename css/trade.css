@@ -1,0 +1,37 @@
+.table {
+    max-height: 20%;
+    max-width: 50%;
+    margin-left: 5%;
+}
+
+.current-stocks {
+    flex: 1 0;
+    display: flex;
+    padding-right: 50px;
+}
+
+.buy-sell-stocks {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.vr {
+    height: 50%;
+}
+
+@media (max-height: 600px){
+    header {
+        display: none;
+    }
+    main {
+        padding-top: 0%;
+    }
+    footer {
+        display: none;
+    }
+}

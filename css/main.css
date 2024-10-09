@@ -1,0 +1,43 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-width: 375px;
+}
+  
+header {
+    flex: 0 50px;
+}
+
+main {
+    flex: 1 calc(100vh - 110px);
+    display: flex;
+    flex-direction: column;
+    padding-top: 2vh;
+}
+  
+footer {
+    flex: 0 30px;
+}
+
+.bold {
+    font-weight: bold !important;
+}
+
+.login {
+    padding-right: 1em;
+}
+
+.no-decoration{
+    text-decoration: none !important;
+}
+
+.text-grey {
+    color: darkgray;
+}
+
+.login {
+    padding-right: 1em;
+}
+
+
+
