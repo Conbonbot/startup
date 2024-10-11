@@ -17,14 +17,3 @@
     background-color: white !important;
 }
 
-@media (max-height: 600px){
-    header {
-        display: none;
-    }
-    main {
-        padding-top: 0%;
-    }
-    footer {
-        display: none;
-    }
-}

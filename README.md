@@ -42,3 +42,12 @@ The following is the structure of the HTML used in the website
 - [x] **Images**: A favicon image is used for the website, as well as historic stock pictures
 - [x] **DB/Login**: Input boxes for ticker symbols, user login, as well as display what stocks the user has.
 - [x] **WebSocket**: The market price of a stock, alongside current price of all the user's stocks are displayed in realtime.
+
+### CSS Deliverable
+The following describes what has been achieved using CSS
+- [x] **Header, Footer, Main content, Sections**
+- [x] **Navigation Elements**: Includes a header that has hightlighted your current page, with hyperlinks to go to each page.
+- [x] **Responsive to Window Sizing**: Header/footer disapear if the window is too small, alongsize resizing text on the learn page
+- [x] **Application Elements**: The elements fill up the entire page, without leaving whitespace, with good contrast and seperation between sections
+- [x] **Application Text Content**: The forms are consistent, however as of now they do not have custom error messages for invalid submitions
+- [x] **Application Images**: The favicon image is used to link to the root page. Additionally, there are images to help reader understand stocks on the learn page.
