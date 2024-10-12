@@ -45,6 +45,7 @@ The following is the structure of the HTML used in the website
 
 ### CSS Deliverable
 The following describes what has been achieved using CSS
+- [x] **Bootstrap 5**: Uses the newest Bootstrap 5 and flexboxes for better user interaction.
 - [x] **Header, Footer, Main content, Sections**
 - [x] **Navigation Elements**: Includes a header that has hightlighted your current page, with hyperlinks to go to each page.
 - [x] **Responsive to Window Sizing**: Header/footer disapear if the window is too small, alongsize resizing text on the learn page

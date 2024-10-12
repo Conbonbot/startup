@@ -3,6 +3,7 @@
     display: flex;
     max-height: 50%;
     justify-content: center;
+    
 }
 
 .stock-information {
@@ -20,13 +21,14 @@
     height: 45%;
 }
 
-@media (max-height: 850px){
-    .examples-with-pictures {
-        font-size: 1.5vh;
-    }
+hr {
+    width: 50%;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 
-@media (max-width: 800px){
+
+@media (max-width: 1000px){
     .examples-with-pictures {
         font-size: 1.5vw;
     }

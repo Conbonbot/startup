@@ -23,3 +23,9 @@
 .vr {
     height: 50%;
 }
+
+@media (max-width: 820px){
+    .change-size {
+        font-size: 3vw;
+    }
+}
