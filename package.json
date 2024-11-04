@@ -1,0 +1,24 @@
+{
+  "name": "startup",
+  "version": "0.1.0",
+  "description": "This applications serves to help people understand the logistics of the stock market, without having to invest capital and run the risk of losing money.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^4.3.2"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.7.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.4.3"
+  },
+  "keywords": [],
+  "author": "Connor Harvey",
+  "license": "ISC"
+}
