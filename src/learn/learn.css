@@ -3,6 +3,7 @@
     display: flex;
     max-height: 50%;
     justify-content: center;
+    overflow: hidden;
     
 }
 
@@ -35,5 +36,16 @@ hr {
 @media (max-width: 1000px){
     .examples-with-pictures {
         display: grid;
+        min-height: fit-content;
+    }
+    main {
+        min-height: fit-content;
+    }
+    
+}
+
+@media (max-height: 700px){
+    .fixed{
+        height: fit-content !important;
     }
 }

@@ -128,7 +128,12 @@ function Stocks(props) {
         if(stock.ticker === ticker){
           if(stock.amount < amount){
             // Send error message
-          } else {
+          }
+          else if(stock.amount == amount){
+            stocks.splice(index,1);
+            existStock = true;
+          }
+          else {
             stocks[index].amount = parseInt(stock.amount) - parseInt(amount);
             stocks[index].date = date;
             existStock = true;

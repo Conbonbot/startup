@@ -28,7 +28,7 @@ const badStocks = [bad1, bad2, bad3, bad4];
 export function Market(){
     return(
         <>
-          <main className="container-fluid bg-secondary text-center">
+          <main className="container-fluid bg-secondary text-center fixed">
             <h1>Below are the current best performing stocks of the week (with weekly % increase)</h1>
             <section className="weekly-performers">
               <table className="table table-striped table-bordered">

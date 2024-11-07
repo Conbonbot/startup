@@ -2,12 +2,12 @@ import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import './learn.css';
 
-
+// TODO: fix css
 
 export function Learn(props){
     return (
         <>
-          <main className="container-fluid bg-secondary text-center">
+          <main className="container-fluid bg-secondary text-center fixed">
             <h1>Below is a breakdown of how stocks function</h1>
               <section className="examples-with-pictures">
                 <div className="card card-styled">
