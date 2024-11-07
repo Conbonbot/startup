@@ -13,6 +13,7 @@ main {
     display: flex;
     flex-direction: column;
     padding-top: 2vh;
+    height: calc(100vh - 80px);
 }
   
 footer {
@@ -55,7 +56,7 @@ footer {
         display: none;
     }
     main {
-        flex: 1 100vh;
+        height: 100vh;
     }
     footer {
         display: none;

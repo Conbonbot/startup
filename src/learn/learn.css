@@ -21,6 +21,10 @@
     height: 45%;
 }
 
+.card-styled {
+    width: 20rem;
+}
+
 hr {
     width: 50%;
     margin-left: auto !important;
@@ -30,6 +34,6 @@ hr {
 
 @media (max-width: 1000px){
     .examples-with-pictures {
-        font-size: 1.5vw;
+        display: grid;
     }
 }

@@ -5,7 +5,6 @@
 }
 
 .current-stocks {
-    flex: 1 0;
     display: flex;
     padding-right: 50px;
 }
@@ -17,11 +16,15 @@
     width: 25%;
     margin-left: auto;
     margin-right: auto;
+    text-align: center;
 }
 
 .change-size {
     margin-right: 2%;
+    margin-top: 2%;
+    text-align: center;
 }
+
 
 
 .vr-trade {
@@ -33,3 +36,4 @@
         font-size: 3vw;
     }
 }
+
