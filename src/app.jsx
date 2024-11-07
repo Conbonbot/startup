@@ -49,7 +49,7 @@ function App() {
               <div className="container-fluid">
                 <NavLink to="/" className="no-decoration">
                   <a className="navbar-brand">
-                    <img className="header-image" src="../image/pages/favicon.ico" alt="Logo" />
+                    <img className="header-image" src="/pages/favicon.ico" alt="Logo" />
                       Stock Trader
                     </a>
                 </NavLink>

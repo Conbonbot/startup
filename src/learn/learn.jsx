@@ -11,7 +11,7 @@ export function Learn(props){
             <h1>Below is a breakdown of how stocks function</h1>
               <section className="examples-with-pictures">
                 <div className="card card-styled">
-                  <img src="../../image/pages/old_nvidia_stock_photo.jpg" className="card-img-top" alt="old-NVDA" />
+                  <img src="/pages/old_nvidia_stock_photo.jpg" className="card-img-top" alt="old-NVDA" />
                     <div className="card-body">
                       <h5 className="card-title">Example #1</h5>
                         <p className="card-text">
@@ -24,7 +24,7 @@ export function Learn(props){
                     </div>
                 </div>
                 <div className="card card-styled">
-                  <img src="../../image/pages/crash.png" className="card-img-top" alt="dow-decline" />
+                  <img src="/pages/crash.png" className="card-img-top" alt="dow-decline" />
                   <div className="card-body">
                     <h5 className="card-title">Example #2</h5>
                     <p className="card-text">
@@ -36,7 +36,7 @@ export function Learn(props){
                   </div>
                 </div>
                 <div className="card card-styled">
-                  <img src="../../image/pages/sp500bubble.jpg" className="card-img-top" alt="almost-nothing" />
+                  <img src="/pages/sp500bubble.jpg" className="card-img-top" alt="almost-nothing" />
                   <div className="card-body">
                     <h5 className="card-title">Example #3</h5>
                     <p className="card-text">
