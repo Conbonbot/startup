@@ -2,7 +2,6 @@ import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import './learn.css';
 
-// TODO: fix css
 
 export function Learn(props){
     return (

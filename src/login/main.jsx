@@ -1,8 +1,11 @@
 import React from 'react';
-import { Stock } from './Stock';
+import { useNavigate } from 'react-router-dom';
+import './main.css';
+import { AuthState } from './authState';
 
 export function Main(props){
     const userName = props.userName;
+    
     const [stocks, setStocks] = React.useState([]);
 
     React.useEffect(() => {
@@ -45,7 +48,7 @@ export function Main(props){
         <div className='welcome-title'>
           <h1>Welcome to the Stock Trader, <i>{props.userName}</i>!</h1>
           <h2>{welcome}</h2>
-          <table className='table table-striped table-bordered'>
+          <table className='table table-striped table-bordered short-table'>
             <thead className='thread-dark'>
             <tr className='bold table-primary'>
               <th>Stock</th>

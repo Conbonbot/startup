@@ -8,11 +8,11 @@ There are many people today who don't know much, or anything, about the stock ma
 ### Design
 
 Here is a rough sketch of the application itself in the home page.
-![Here is a rough sketch of the application itself in the home page.](image/README/example_home_page.png)
+![Here is a rough sketch of the application itself in the home page.](public/README/example_home_page.png)
 
 
 And here is how the users connect with the backend server and the stock market API.
-![And how the frontend connects with the backend](image/README/example_backend.png)
+![And how the frontend connects with the backend](public/README/example_backend.png)
 
 ### Key Features
 * Secure, encrypted login
@@ -37,7 +37,7 @@ The following is how I will use the required technologies for this website
 ### HTML Deliverable
 The following is the structure of the HTML used in the website
 - [x] **4 HTML pages**: Home, Trade, Learn, and Login
-- [ ] **Header/Footer**: TODO header and footer HTMl files are in layouts folder (loaded by JS)
+- [x] **Header/Footer**: header and footer HTMl files are in layouts folder (loaded by JS)
 - [x] **Text**: Stocks are represented by a textual description, including different important aspects
 - [x] **Images**: A favicon image is used for the website, as well as historic stock pictures
 - [x] **DB/Login**: Input boxes for ticker symbols, user login, as well as display what stocks the user has.
@@ -52,3 +52,13 @@ The following describes what has been achieved using CSS
 - [x] **Application Elements**: The elements fill up the entire page, without leaving whitespace, with good contrast and seperation between sections
 - [x] **Application Text Content**: The forms are consistent, however as of now they do not have custom error messages for invalid submitions
 - [x] **Application Images**: The favicon image is used to link to the root page. Additionally, there are images to help reader understand stocks on the learn page.
+
+### React Deliverable
+The following describes what has been done using React, Vite, and Routers
+- [x] **Bundled and Transpiled**: Done.
+- [x] **Components**: Login/signup, Logout, buy/sell are all components with mocks for login/WebSocket (all currently use localStorage)
+    - [x] **Login**: Allows login, which grants access to the user's portfolio and trade pages.
+    - [x] **Database**: Using localStorage, a count is kept of the user's positions and amount of shares. NOTE: In lack of access to an official stock API, the 'profits' and 'price' are merely calculated with Math.random(), and all ticker symbols are considered "valid".
+    - [x] **Application logic**: Buying/selling accurately displays user's positions, with errors if the order cannot be completed, and redirection if the user is not authorized to view a certain page.
+- [x] **Router**: Routing between pages is done with the BrowserRouter, Router, and NavLink components
+- [x] **Hooks**: Using `useState`: each users' stocks are displayed and for the use of logins.

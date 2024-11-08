@@ -38,7 +38,6 @@ function App() {
 
     const logout = () => {
       localStorage.removeItem('userName');
-      setUserName('');
       setAuthState(AuthState.Unauthenticated);
     }
 
@@ -86,7 +85,9 @@ function App() {
                     />} exact />
             <Route path="/learn" element={<Learn />} />
             <Route path="/market" element={<Market />} />
-            <Route path="/trade" element={<Trade userName={userName} />} />
+            <Route path="/trade" element={<Trade 
+                        userName={userName}
+                        authState={authState} />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />

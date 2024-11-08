@@ -1,32 +1,49 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
+import { AuthState } from '../login/authState';
 import './trade.css';
-
-// NOTE: This code is only an example
-
-
-
 
 
 export function Trade(props){
 
-    return (
+    if (props.userName){
+      return (
+          <>
+            <main className="container-fluid bg-secondary text-center">
+              <CurrentStocks props={props}/>
+              <section className="buy-sell-stocks">
+                <h2>Enter Below</h2>
+                <Stocks props={props} />
+              </section>
+            </main>
+          </>
+      );
+    } else {
+      const navigate = useNavigate();
+      return (
         <>
-          <main className="container-fluid bg-secondary text-center">
-            <CurrentStocks props={props}/>
-            <section className="buy-sell-stocks">
-              <h2>Enter Below</h2>
-              <Stocks props={props} />
-            </section>
-          </main>
+        <main className="container-fluid bg-secondary text-center">
+          <Alert variant='danger' className='narrow'>
+          <Alert.Heading>Something's not right</Alert.Heading>
+          <p>It appears you're not signed in. Click on the button below to sign in.</p>
+          <hr />
+          <div className='d-flex justify-content-end'>
+          <Button onClick={() => navigate('/')} variant='outline-danger'>Sign in</Button>
+          </div>
+          </Alert>
+        </main>
         </>
-    );
+      )
+    }
+    
 }
 
 function CurrentStocks(props) {
   const userName = props.props.userName;
+  
   const [stocks, setStocks] = React.useState([]);
 
   React.useEffect(() => {
@@ -84,11 +101,16 @@ function CurrentStocks(props) {
 
 
 
+
+
 function Stocks(props) {
     const navigate = useNavigate();
 
     const [ticker, setTicker] = useState(null);
     const [amount, setAmount] = useState(null);
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState(null);
+
 
     const userName = props.props.userName;
     const userStocks = localStorage.getItem(userName);
@@ -99,7 +121,11 @@ function Stocks(props) {
     }
 
     async function buy(userName, ticker, amount){
-      
+      if(amount < 1){
+        setMessage(`Number has to be greater than 0`);
+        setError(true);
+        return;
+      }
        // TODO: update to put actual information about stock price
       const date = new Date().toLocaleDateString();
       let existStock = false;
@@ -116,18 +142,29 @@ function Stocks(props) {
         stocks.push(order);
       }
       localStorage.setItem(userName, JSON.stringify(stocks));
-      navigate('/');
-
+      if(amount > 1){
+        setMessage(`${amount} shares of ${ticker} bought successfully!`);
+      } else {
+        setMessage(`${amount} share of ${ticker} bought successfully!`);
+      }
+      setError(false);
     }
 
     async function sell(userName, ticker, amount){
       // Check if user holds that stock (and amount)
+      if(amount < 1){
+        setMessage(`Number has to be greater than 0`);
+        setError(true);
+        return;
+      }
       const date = new Date().toLocaleDateString();
       let existStock = false;
       stocks.forEach((stock, index) => {
         if(stock.ticker === ticker){
           if(stock.amount < amount){
-            // Send error message
+            setMessage(`You cannot sell more shares of ${ticker} than you owe. You can sell up to ${stock.amount} shares of this stock.`);
+            setError(true);
+            return;
           }
           else if(stock.amount == amount){
             stocks.splice(index,1);
@@ -140,12 +177,22 @@ function Stocks(props) {
           }
         }
         if(!existStock){
-          // Send error message
+          setMessage(`You do not own any stock with the name: ${ticker}.`);
+          setError(true);
         } else {
           localStorage.setItem(userName, JSON.stringify(stocks));
-          navigate('/');
+          if(amount > 1){
+            setMessage(`${amount} shares of ${ticker} sold successfully!`);
+          } else {
+            setMessage(`${amount} share of ${ticker} sold successfully!`);
+          }
+          setError(false);
         }
       })
+
+    }
+
+    async function handleMessage(success, reason){
 
     }
 
@@ -160,13 +207,41 @@ function Stocks(props) {
           </div>
           <div className="input-group mb-3">
             <span className="input-group-text" id="number">#</span>
-            <input className="form-control" type="number" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 2" />
+            <input className="form-control" type="number" min="1" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 2" />
           </div>
           <div className="col-12">
             <Button className="btn btn-success" onClick={() => buy(userName, ticker, amount)} disabled={!ticker || !amount} >Buy</Button>
             <div className="vr vr-login"></div>
             <Button className="btn btn-danger" onClick={() => sell(userName, ticker, amount)} disabled={!userStocks || !ticker || !amount} >Sell</Button>
           </div>
+          <br />
+          {message
+            ? error
+              ?
+                <>
+                  <Alert variant='danger'>
+                    <Alert.Heading>Error in order</Alert.Heading>
+                    <p>{message}</p>
+                    <hr />
+                    <div className='d-flex justify-content-end'>
+                      <Button onClick={() => navigate('/')} variant='outline-danger'>Return to Home</Button>
+                    </div>
+                  </Alert>
+                </>
+              : 
+                <>
+                  <Alert variant='success'>
+                   <Alert.Heading>Order successful!</Alert.Heading>
+                   <p>{message}</p>
+                   <p>Click on the home button below to see your updated stock profile.</p>
+                   <hr />
+                    <div className='d-flex justify-content-end'>
+                    <Button onClick={() => navigate('/')} variant='outline-success'>Return to Home</Button>
+                    </div>
+                  </Alert>
+                </>
+            : <></>
+          }
         </form>
       </>
     );
