@@ -1,14 +1,16 @@
 const express = require('express');
+// TODO: use bcrypt
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const uuid = require('uuid');
+const pluralize = require('pluralize')
 const app = express();
 
 
 
 // Stocks and users are saved in memory
 let users = {};
-let stocks = {};
+let stocks = [];
 
 // The service port
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -66,6 +68,7 @@ apiRouter.delete('/auth/logout', (req, res) => {
     if(user) {
         delete user.token;
     }
+    console.log(`Logging out user: ${user}`);
     res.status(204).end();
 });
 
@@ -73,17 +76,84 @@ apiRouter.delete('/auth/logout', (req, res) => {
 
 // Buying order
 apiRouter.post('/buy', (req, res) => {
+    let message = ``;
+    let error = false;
     console.log(req.body);
-    stocks = req.body;
-    res.send(stocks);
+    if(req.body.amount < 1){
+        message = `Number has to be greater than 0`;
+        error = true;
+    }
+    const date = new Date().toLocaleDateString();
+    let existStock = false;
+    stocks.forEach((stock, index) => {
+        if(stock.userName === req.body.userName && stock.ticker === req.body.ticker){
+          stocks[index].amount = parseInt(stock.amount) + parseInt(req.body.amount);
+          stocks[index].price = Math.random()*100;
+          stocks[index].date = date;
+          existStock = true;
+        }
+      });
+    if(!existStock){
+        const order = {userName: req.body.userName, ticker: req.body.ticker, amount: req.body.amount, price: Math.random()*100, date: date};
+        stocks.push(order);
+    }
+    if(!error){
+        message = `${(pluralize('share', req.body.amount, true))} of ${req.body.ticker} bought successfully!`;
+    }
+    res.send({ error: error, message: message });
 });
 
 // Selling order
 apiRouter.post('/sell', (req, res) => {
+    let message = ``;
+    let error = false;
     console.log(req.body);
-    stocks = req.body;
-    res.send(stocks);
+    if(req.body.amount < 1){
+        message = `Number has to be greater than 0`;
+        error = true;
+    }
+    const date = new Date().toLocaleDateString();
+    let existStock = false;
+    stocks.forEach((stock, index) => {
+        if(stock.userName === req.body.userName && stock.ticker === req.body.ticker){
+            if(stock.amount < req.body.amount){
+                message = `You cannot sell more shares of ${req.body.ticker} than you owe. You can sell up to ${stock.amount} shares of this stock.`;
+                error = true;
+            }
+            else if(stock.amount === req.body.amount){
+                stocks.splice(index,1);
+                existStock = true;
+            }
+            else {
+                stocks[index].amount = parseInt(stock.amount) - parseInt(req.body.amount);
+                stocks[index].date = date;
+                existStock = true;
+            }
+        }
+    })
+    if(!existStock){
+        message = `You do not own any stock with the name: ${req.body.ticker}.`;
+    }
+    error = !existStock;
+    if(!error){
+        message = `${(pluralize('share', req.body.amount, true))} of ${req.body.ticker} sold successfully!`;
+    }
+    res.send({ error: error, message: message });
 });
+
+// Display stocks
+apiRouter.post('/stocks', (req, res) => {
+    console.log(req.body);
+    let userStocks = [];
+    stocks.forEach((stock, index) => {
+        if(stock.userName === req.body.userName){
+            userStocks.push(stock);
+        }
+    });
+    console.log("Sending stocks", userStocks);
+    res.send(userStocks);
+});
+
 
 
 app.use((_req, res) => {

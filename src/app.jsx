@@ -7,6 +7,7 @@ import { Trade } from './trade/trade';
 import { Login } from './login/login';
 import { Market } from './market/market';
 import { AuthState } from './login/authState';
+import { ResetForm } from './trade/resetForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
@@ -78,6 +79,7 @@ function App() {
                         userName={userName}
                         authState={authState} />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/resetForm" element={<ResetForm />} /> 
           </Routes>
           <Footer />
         </BrowserRouter>

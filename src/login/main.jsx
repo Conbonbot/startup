@@ -1,18 +1,22 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 import './main.css';
-import { AuthState } from './authState';
 
 export function Main(props){
     const userName = props.userName;
     
-    const [stocks, setStocks] = React.useState([]);
+    const [stocks, setStocks] = useState([]);
 
-    React.useEffect(() => {
-        const stocksText = localStorage.getItem(userName);
-        if(stocksText) {
-            setStocks(JSON.parse(stocksText));
-        }
+    useEffect(() => {
+      fetch('/api/stocks', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({userName: userName}),
+      })
+      .then((response) => response.json())
+      .then((stocks) => {
+        setStocks(stocks);
+      })
     }, []);
 
     const welcome = (stocks.length) ? "Below are the stocks you currently hold" : "You currently do not hold any stocks. Go to 'Trade' to purchase some!";

@@ -13,7 +13,7 @@ export function TradeDialog(props) {
 
     function resetForm(){
         setShow(false);
-        props.clearForm();
+        navigate('/resetForm');
     }
 
     if(props.message){
@@ -39,9 +39,10 @@ export function TradeDialog(props) {
                     <Modal.Header>
                         <Modal.Title>Order Successful!</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>{props.message} Click the button below to return to the home page and see your updated profile.</Modal.Body>
+                    <Modal.Body>{props.message} Click the button below to return to the home page and see your updated profile, or place another order.</Modal.Body>
                     <Modal.Footer>
                         <Button onClick={() => navigate('/')} variant='outline-success'>Return to home</Button>
+                        <Button onClick={() => resetForm()} variant='outline-success'>Place another order</Button>
                     </Modal.Footer>
                 </Modal>
             ) ;

@@ -9,14 +9,29 @@ import './trade.css';
 
 export function Trade(props){
 
+    const userName = props.userName;
+    const [stocks, setStocks] = useState([]);
+
+    useEffect(() => {
+      fetch('/api/stocks', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({userName: userName}),
+      })
+      .then((response) => response.json())
+      .then((stocks) => {
+        setStocks(stocks);
+      })
+    }, []);
+
     if (props.userName){
       return (
           <>
             <main className="container-fluid bg-secondary text-center">
-              <CurrentStocks props={props}/>
+              <CurrentStocks stocks={stocks}/>
               <section className="buy-sell-stocks">
                 <h2>Enter Below</h2>
-                <Stocks props={props} />
+                <Stocks userName={userName} stocks={stocks} />
               </section>
             </main>
           </>
@@ -41,34 +56,24 @@ export function Trade(props){
     
 }
 
-function CurrentStocks(props) {
-  const userName = props.props.userName;
-  const [stocks, setStocks] = React.useState([]);
-
-  React.useEffect(() => {
-    const stocksText = localStorage.getItem(userName);
-    if(stocksText) {
-        setStocks(JSON.parse(stocksText));
-    }
-  }, []);
-  
+function CurrentStocks(stocks) {
   const stockRows = [];
-  if(stocks.length) {
-    for(const [index, stock] of stocks.entries()){
-        const dif = (parseFloat(stock.price)-parseFloat(Math.random()*100)).toFixed(2);
-        stockRows.push(
-            <tr>
-              <td className='bold'>{stock.ticker}</td>
-              <td>{stock.amount}</td>
-              <td>{(stock.price*stock.amount).toFixed(2)}</td>
-              {dif > 0 ? (
-                <td className='table-success'>{dif}</td>
-              ) : (
-                <td className='table-danger'>{dif}</td>
-              )}
-            </tr>
-        );
-    }
+  if(stocks.stocks.length) {
+    stocks.stocks.forEach(stock => {
+      const dif = (parseFloat(stock.price)-parseFloat(Math.random()*100)).toFixed(2);
+      stockRows.push(
+          <tr>
+            <td className='bold'>{stock.ticker}</td>
+            <td>{stock.amount}</td>
+            <td>{(stock.price*stock.amount).toFixed(2)}</td>
+            {dif > 0 ? (
+              <td className='table-success'>{dif}</td>
+            ) : (
+              <td className='table-danger'>{dif}</td>
+            )}
+          </tr>
+      );
+    });
     return (
       <>
         <section className="current-stocks">
@@ -102,111 +107,37 @@ function CurrentStocks(props) {
 
 
 
-function Stocks(props) {
-    const [ticker, setTicker] = useState(null);
+function Stocks(user) {
+    const [ticker, setTicker] = useState('');
     const [amount, setAmount] = useState(null);
     const [message, setMessage] = useState('');
     const [error, setError] = useState(null);
 
 
-    const userName = props.props.userName;
-    const userStocks = localStorage.getItem(userName);
 
-    let stocks = [];
-    if(userStocks) {
-      stocks = JSON.parse(userStocks);
-    }
-
-    function clearForm(){
-      setTicker(null);
-      setAmount(null);
-      setMessage('');
-      setError(null);
-      document.getElementById("stock-trading-form").reset();
-    }
-
-    async function buy(userName, ticker, amount){
-      if(amount < 1){
-        setMessage(`Number has to be greater than 0`);
-        setError(true);
-        return;
-      }
-       // TODO: update to put actual information about stock price
-      const date = new Date().toLocaleDateString();
-      let existStock = false;
-      stocks.forEach((stock, index) => {
-        if(stock.ticker === ticker){
-          stocks[index].amount = parseInt(stock.amount) + parseInt(amount);
-          stocks[index].price = Math.random()*100;
-          stocks[index].date = date;
-          existStock = true;
-        }
-      });
-      if(!existStock){
-        const order = {ticker: ticker, amount: amount, price: Math.random()*100, date: date};
-        stocks.push(order);
-      }
-      await fetch('/api/buy', {
+    async function buy(ticker, amount){
+      const response = await fetch('/api/buy', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(stocks),
+        body: JSON.stringify({userName: user.userName, ticker: ticker, amount: amount}),
       });
-      localStorage.setItem(userName, JSON.stringify(stocks));
-      if(amount > 1){
-        setMessage(`${amount} shares of ${ticker} bought successfully!`);
-      } else {
-        setMessage(`${amount} share of ${ticker} bought successfully!`);
-      }
-      setError(false);
+      const body = await response.json();
+      setMessage(body.message);
+      setError(body.error);
     }
 
-    async function sell(userName, ticker, amount){
-      // Check if user holds that stock (and amount)
-      if(amount < 1){
-        setMessage(`Number has to be greater than 0`);
-        setError(true);
-        return;
-      }
-      const date = new Date().toLocaleDateString();
-      let existStock = false;
-      stocks.forEach((stock, index) => {
-        if(stock.ticker === ticker){
-          if(stock.amount < amount){
-            setMessage(`You cannot sell more shares of ${ticker} than you owe. You can sell up to ${stock.amount} shares of this stock.`);
-            setError(true);
-            return;
-          }
-          else if(stock.amount == amount){
-            stocks.splice(index,1);
-            existStock = true;
-          }
-          else {
-            stocks[index].amount = parseInt(stock.amount) - parseInt(amount);
-            stocks[index].date = date;
-            existStock = true;
-          }
-        }
-        if(!existStock){
-          setMessage(`You do not own any stock with the name: ${ticker}.`);
-          setError(true);
-        } else {
-          setError(false);
-        }
-      })
-      if(!error){
-        await fetch('/api/sell', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(stocks),
-        });
-        localStorage.setItem(userName, JSON.stringify(stocks));
-        if(amount > 1){
-          setMessage(`${amount} shares of ${ticker} sold successfully!`);
-        } else {
-          setMessage(`${amount} share of ${ticker} sold successfully!`);
-        }
-      }
+    async function sell(ticker, amount){
+      const response = await fetch('/api/sell', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({userName: user.userName, ticker: ticker, amount: amount}),
+      });
+      const body = await response.json();
+      setMessage(body.message);
+      setError(body.error);
     }
+
+
 
     
 
@@ -222,13 +153,13 @@ function Stocks(props) {
             <input className="form-control" type="number" min="1" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 2" />
           </div>
           <div className="col-12">
-            <Button className="btn btn-success" onClick={() => buy(userName, ticker, amount)} disabled={!ticker || !amount} >Buy</Button>
+            <Button className="btn btn-success" onClick={() => buy(ticker, amount)} disabled={!ticker || !amount} >Buy</Button>
             <div className="vr vr-login"></div>
-            <Button className="btn btn-danger" onClick={() => sell(userName, ticker, amount)} disabled={!userStocks || !ticker || !amount} >Sell</Button>
+            <Button className="btn btn-danger" onClick={() => sell(ticker, amount)} disabled={!user.stocks.length || !ticker || !amount} >Sell</Button>
           </div>
           <br />
         </form>
-        <TradeDialog message={message} error={error} clearForm={() => clearForm()} />
+        <TradeDialog message={message} error={error} />
       </>
     );
 }
