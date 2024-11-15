@@ -1,0 +1,16 @@
+{
+  "name": "startup-service",
+  "version": "1.0.0",
+  "description": "This is the backend service for the stock trader application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Connor Harvey",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.1",
+    "uuid": "^11.0.3"
+  }
+}

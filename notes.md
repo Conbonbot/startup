@@ -8,6 +8,7 @@ Domain name: connor-webserver-260.click
 Keep the AWS server at US East (N. Virginia)
 To push to server: ./deployFiles.sh -k .\Aws-key.pem -h connor-webserver-260.click -s startup 
 ./deployReact.sh -k .\Aws-key.pem -h connor-webserver-260.click -s startup
+./deployService.sh -k .\Aws-key.pem -h connor-webserver-260.click -s startup
 
 ## Class Notes
 The following are notes for each important section (**HTML**, **CSS**, **JS**, and **Console**)
@@ -189,6 +190,18 @@ Most commonly, a JSON document contains an object. Objects contain zero or more 
 * **wget** - Download files from the web
 * **sudo** - Super User.
 
+### APIs
+Below are API request methods
+* **GET** - retrieves information or data from a specified resource
+* **POST** - submits data to be processed to a specified resource
+* **PUT** - updates a specified resource with new data
+* **DELETE** - deletes a specified resource
+* **PATCH** - partially updates a specified resource
+* **OPTIONS** - retrieves the supported HTTP methods of a server endpoint
+* **HEAD** - retrieves only the headers of a response without the response body
+* **CONNECT** - establishes a network connection to a resource, typically used for SSL/TLS tunneling
+* **TRACE** - echoes the received request back to the client, for debugging purposes
+
 ### Other
 
 * **Domains** - A domain name is simply a text string that follows a specific naming convention and is listed in a special database called the domain name registry. Broken up into a root domain, with one or more possible subdomains prefixes. The root domain is represented by a secondary level domain and a top level domain (e.g. `.com`)
@@ -197,3 +210,6 @@ Example `https://www.shop.example.com` | `https://` -> Protocol | `www.` -> subd
 * **HTTPS** - HTTPS: Most crucially for businesses, an SSL certificate is necessary for an HTTPS web address. HTTPS is the secure form of HTTP, and HTTPS websites are websites that have their traffic encrypted by SSL/TLS.
 * **DNS A record** -  A DNS A record is the most fundamental type of DNS record. The A stands for “Address,” and it’s used to point a domain name to an IP address or host. You can only use an A record when you want to point to an IPv4 address. An AAAA record is required if you wish to direct your domain to an IPv6 address. 
 * **Ports** - `443` is used for HTTPS, `80` for HTTP, `22` for SSH
+
+
+

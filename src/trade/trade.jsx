@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
-import { AuthState } from '../login/authState';
+import { TradeDialog } from './tradeDialog';
 import './trade.css';
 
 
@@ -43,7 +43,6 @@ export function Trade(props){
 
 function CurrentStocks(props) {
   const userName = props.props.userName;
-  
   const [stocks, setStocks] = React.useState([]);
 
   React.useEffect(() => {
@@ -104,8 +103,6 @@ function CurrentStocks(props) {
 
 
 function Stocks(props) {
-    const navigate = useNavigate();
-
     const [ticker, setTicker] = useState(null);
     const [amount, setAmount] = useState(null);
     const [message, setMessage] = useState('');
@@ -118,6 +115,14 @@ function Stocks(props) {
     let stocks = [];
     if(userStocks) {
       stocks = JSON.parse(userStocks);
+    }
+
+    function clearForm(){
+      setTicker(null);
+      setAmount(null);
+      setMessage('');
+      setError(null);
+      document.getElementById("stock-trading-form").reset();
     }
 
     async function buy(userName, ticker, amount){
@@ -141,6 +146,11 @@ function Stocks(props) {
         const order = {ticker: ticker, amount: amount, price: Math.random()*100, date: date};
         stocks.push(order);
       }
+      await fetch('/api/buy', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(stocks),
+      });
       localStorage.setItem(userName, JSON.stringify(stocks));
       if(amount > 1){
         setMessage(`${amount} shares of ${ticker} bought successfully!`);
@@ -180,30 +190,32 @@ function Stocks(props) {
           setMessage(`You do not own any stock with the name: ${ticker}.`);
           setError(true);
         } else {
-          localStorage.setItem(userName, JSON.stringify(stocks));
-          if(amount > 1){
-            setMessage(`${amount} shares of ${ticker} sold successfully!`);
-          } else {
-            setMessage(`${amount} share of ${ticker} sold successfully!`);
-          }
           setError(false);
         }
       })
-
-    }
-
-    async function handleMessage(success, reason){
-
+      if(!error){
+        await fetch('/api/sell', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(stocks),
+        });
+        localStorage.setItem(userName, JSON.stringify(stocks));
+        if(amount > 1){
+          setMessage(`${amount} shares of ${ticker} sold successfully!`);
+        } else {
+          setMessage(`${amount} share of ${ticker} sold successfully!`);
+        }
+      }
     }
 
     
 
     return (
       <>
-        <form >
+        <form id="stock-trading-form">
           <div className="input-group mb-3">
             <span className="input-group-text" id="ticker">Ticker</span>
-            <input className="form-control" type="text" value={ticker} onChange={(e) => setTicker(e.target.value)} placeholder="e.g. NVDA" />
+            <input className="form-control" type="text" value={ticker} onChange={(e) => setTicker((e.target.value).toUpperCase())} placeholder="e.g. NVDA" />
           </div>
           <div className="input-group mb-3">
             <span className="input-group-text" id="number">#</span>
@@ -215,34 +227,8 @@ function Stocks(props) {
             <Button className="btn btn-danger" onClick={() => sell(userName, ticker, amount)} disabled={!userStocks || !ticker || !amount} >Sell</Button>
           </div>
           <br />
-          {message
-            ? error
-              ?
-                <>
-                  <Alert variant='danger'>
-                    <Alert.Heading>Error in order</Alert.Heading>
-                    <p>{message}</p>
-                    <hr />
-                    <div className='d-flex justify-content-end'>
-                      <Button onClick={() => navigate('/')} variant='outline-danger'>Return to Home</Button>
-                    </div>
-                  </Alert>
-                </>
-              : 
-                <>
-                  <Alert variant='success'>
-                   <Alert.Heading>Order successful!</Alert.Heading>
-                   <p>{message}</p>
-                   <p>Click on the home button below to see your updated stock profile.</p>
-                   <hr />
-                    <div className='d-flex justify-content-end'>
-                    <Button onClick={() => navigate('/')} variant='outline-success'>Return to Home</Button>
-                    </div>
-                  </Alert>
-                </>
-            : <></>
-          }
         </form>
+        <TradeDialog message={message} error={error} clearForm={() => clearForm()} />
       </>
     );
 }

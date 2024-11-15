@@ -11,34 +11,23 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
 
-class Stock {
-    constructor(name, shares, price, profit){
-        this.name = name;
-        this.shares = shares;
-        this.price = price;
-        this.profit = profit;
-    }
-};
-
-// NOTE: This code is only an example and will be removed
-
-const example1 = new Stock("NVDA", Math.round(Math.random()*10), Math.random()*100, Math.random() * 200 - 100); 
-const example2 = new Stock("IONQ", Math.round(Math.random()*10), Math.random()*100, Math.random() * 200 - 100); 
-const example3 = new Stock("TWO", Math.round(Math.random()*10), Math.random()*100, Math.random() * 200 - 100); 
-const example4 = new Stock("ZECP", Math.round(Math.random()*10), Math.random()*100, Math.random() * 200 - 100); 
-
-const all_stocks = [example1, example2, example3, example4];
-
-// End note
 
 function App() {
     const [userName, setUserName] = React.useState(localStorage.getItem('username') || '');
     const currentAuthState = userName ? AuthState.Authenticated : AuthState.Unauthenticated;
     const [authState, setAuthState] = React.useState(currentAuthState);
 
-    const logout = () => {
-      localStorage.removeItem('userName');
-      setAuthState(AuthState.Unauthenticated);
+    function logout() {
+      fetch('/api/auth/logout', {
+        method: 'delete',
+      })
+        .catch(() => {
+          // Logout failed
+        })
+        .finally(() => {
+          localStorage.removeItem('userName');
+          setAuthState(AuthState.Unauthenticated);
+        })
     }
 
     return (
