@@ -6,6 +6,7 @@ export function Main(props){
     const userName = props.userName;
     
     const [stocks, setStocks] = useState([]);
+    const [realStocks, setRealStocks] = useState([]);
 
     useEffect(() => {
       fetch('/api/stocks', {
@@ -17,7 +18,20 @@ export function Main(props){
       .then((stocks) => {
         setStocks(stocks);
       })
+      
     }, []);
+
+    useEffect(() => {
+      fetch('/api/load_stocks', {
+        method: 'GET',
+        headers: { 'content-type': 'application/json' },
+      })
+      .then((response) => response.json())
+      .then((realStocks) => {
+        setRealStocks(realStocks);
+      })
+    }, []);
+
 
     const welcome = (stocks.length) ? "Below are the stocks you currently hold" : "You currently do not hold any stocks. Go to 'Trade' to purchase some!";
 
@@ -25,7 +39,14 @@ export function Main(props){
     
     if(stocks.length) {
         for(const [index, stock] of stocks.entries()){
-            const dif = (parseFloat(stock.price)-parseFloat(Math.random()*100)).toFixed(2);
+            let dif;
+            for(const [index, realStock] of realStocks.entries()){
+              if(realStock.symbol === stock.ticker){
+                dif = (parseFloat(stock.price)-parseFloat(realStock.price)).toFixed(2);
+                break;
+              }
+            }
+            
             stockRows.push(
                 <tr>
                   <td className='bold'>{stock.ticker}</td>
@@ -46,6 +67,7 @@ export function Main(props){
             </tr>
         );
     }
+
 
     return (
       <>

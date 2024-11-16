@@ -6,11 +6,15 @@ const uuid = require('uuid');
 const pluralize = require('pluralize')
 const app = express();
 
+const fs = require('fs');
+const key = fs.readFileSync("../FMP_key.pem", { encoding: "utf8" });
+
 
 
 // Stocks and users are saved in memory
 let users = {};
 let stocks = [];
+let realStocks = [];
 
 // The service port
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -52,14 +56,15 @@ apiRouter.post('/auth/login', async (req, res) => {
         if(req.body.password === user.password){
             user.token = uuid.v4();
             res.send({ token: user.token });
-            return;
+            
+        } else {
+            res.status(401).send({ msg: 'The password is incorrect'});
         }
     }
     else {
         res.status(401).send({ msg: 'This user does not exist' });
-        return;
     }
-    res.status(401).send({ msg: 'The password is incorrect'});
+    
 });
 
 // Delete a user
@@ -72,7 +77,6 @@ apiRouter.delete('/auth/logout', (req, res) => {
     res.status(204).end();
 });
 
-// Get stock information
 
 // Buying order
 apiRouter.post('/buy', (req, res) => {
@@ -85,20 +89,32 @@ apiRouter.post('/buy', (req, res) => {
     }
     const date = new Date().toLocaleDateString();
     let existStock = false;
-    stocks.forEach((stock, index) => {
-        if(stock.userName === req.body.userName && stock.ticker === req.body.ticker){
-          stocks[index].amount = parseInt(stock.amount) + parseInt(req.body.amount);
-          stocks[index].price = Math.random()*100;
-          stocks[index].date = date;
-          existStock = true;
+    let currentPrice = -1;
+    realStocks.forEach((realStock, index) => {
+        if(realStock.symbol === req.body.ticker){
+            currentPrice = realStock.price;
         }
-      });
-    if(!existStock){
-        const order = {userName: req.body.userName, ticker: req.body.ticker, amount: req.body.amount, price: Math.random()*100, date: date};
-        stocks.push(order);
+    });
+    if(currentPrice != -1){
+        stocks.forEach((stock, index) => {
+            if(stock.userName === req.body.userName && stock.ticker === req.body.ticker){
+            stocks[index].amount = parseInt(stock.amount) + parseInt(req.body.amount);
+            stocks[index].price = currentPrice;
+            stocks[index].date = date;
+            existStock = true;
+            }
+        });
+        if(!existStock){
+            const order = {userName: req.body.userName, ticker: req.body.ticker, amount: req.body.amount, price: currentPrice, date: date};
+            stocks.push(order);
+        }
+        if(!error){
+            message = `${(pluralize('share', req.body.amount, true))} of ${req.body.ticker} bought successfully!`;
+        }
     }
-    if(!error){
-        message = `${(pluralize('share', req.body.amount, true))} of ${req.body.ticker} bought successfully!`;
+    else {
+        error = true;
+        message = `${req.body.ticker} is not recognized as an official ticker symbol.`;
     }
     res.send({ error: error, message: message });
 });
@@ -154,6 +170,18 @@ apiRouter.post('/stocks', (req, res) => {
     res.send(userStocks);
 });
 
+// Update stock information
+apiRouter.get('/load_stocks', (_req, res) => {
+    updateStocks();
+    res.send(realStocks);
+});
+
+// Send current (possibly outdated) stock information.
+// Only used to avoid excess API calls
+apiRouter.get('/send_stocks', (_req, res) => {
+    console.log("sending current (possibly outdated) stock data");
+    res.send(realStocks);
+});
 
 
 app.use((_req, res) => {
@@ -164,3 +192,12 @@ app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
 
+function updateStocks(){
+    console.log("updating stocks...");
+    fetch(`https://financialmodelingprep.com/api/v3/symbol/NASDAQ?apikey=${key}`)
+        .then((response) => response.json())
+        .then((data) => {
+            realStocks = data;
+            console.log("Current stock data has been updated!");
+        })
+}

@@ -9,3 +9,7 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+main {
+    min-height: fit-content;
+}

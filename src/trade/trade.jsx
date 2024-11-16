@@ -24,6 +24,9 @@ export function Trade(props){
       })
     }, []);
 
+    
+
+
     if (props.userName){
       return (
           <>
@@ -57,10 +60,29 @@ export function Trade(props){
 }
 
 function CurrentStocks(stocks) {
+
+  const [realStocks, setRealStocks] = useState([]);
+  useEffect(() => {
+    fetch('/api/send_stocks', {
+      method: 'GET',
+      headers: { 'content-type': 'application/json' },
+    })
+    .then((response) => response.json())
+    .then((realStocks) => {
+      setRealStocks(realStocks);
+    })
+  }, []);
+  
   const stockRows = [];
   if(stocks.stocks.length) {
     stocks.stocks.forEach(stock => {
-      const dif = (parseFloat(stock.price)-parseFloat(Math.random()*100)).toFixed(2);
+      let dif;
+      for(const [index, realStock] of realStocks.entries()){
+        if(realStock.symbol === stock.ticker){
+          dif = (parseFloat(stock.price)-parseFloat(realStock.price)).toFixed(2);
+          break;
+        }
+      }
       stockRows.push(
           <tr>
             <td className='bold'>{stock.ticker}</td>
