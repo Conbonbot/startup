@@ -58,7 +58,15 @@ The following describes what has been done using React, Vite, and Routers
 - [x] **Bundled and Transpiled**: Done.
 - [x] **Components**: Login/signup, Logout, buy/sell are all components with mocks for login/WebSocket (all currently use localStorage)
     - [x] **Login**: Allows login, which grants access to the user's portfolio and trade pages.
-    - [x] **Database**: Using localStorage, a count is kept of the user's positions and amount of shares. NOTE: In lack of access to an official stock API, the 'profits' and 'price' are merely calculated with Math.random(), and all ticker symbols are considered "valid".
+    - [x] **Database**: Using arrays in index.js, a count is kept of the user's positions and amount of shares. NOTE: This wil be replaced by mongo databases.
     - [x] **Application logic**: Buying/selling accurately displays user's positions, with errors if the order cannot be completed, and redirection if the user is not authorized to view a certain page.
 - [x] **Router**: Routing between pages is done with the BrowserRouter, Router, and NavLink components
 - [x] **Hooks**: Using `useState`: each users' stocks are displayed and for the use of logins.
+
+### Service Deliverable
+The following shows what has been done using Node.js, Express, and API calls
+- [x] **Node.js/Express HTTP Service** - Completed.
+- [x] **Static Middleware for frotend** - Completed.
+- [x] **Calls to third party endpoints** - Using a stock trader API, buying/selling orders and market information are correctly displayed, and prevents users from inputing invalid information.
+- [x] **Backend service endpoints** - Placeholders to login that stores current users on the server (currently not encrypted with BCrypt), with endpoints for buying/selling
+- [x] **Frontend calls service endpoints** - Using the fetch function (coupled with async or React.useEffect), this is accomplished.

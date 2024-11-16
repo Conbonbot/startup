@@ -7,11 +7,8 @@ const pluralize = require('pluralize')
 const app = express();
 
 const fs = require('fs');
-try{
-    const key = fs.readFileSync("../FMP_key.pem", { encoding: "utf8" });
-} catch {
-    const key = '';
-}
+const key = fs.readFileSync("./FMP_key.pem", { encoding: "utf8" });
+
 
 
 
