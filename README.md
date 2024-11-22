@@ -72,4 +72,10 @@ The following shows what has been done using Node.js, Express, and API calls
 - [x] **Frontend calls service endpoints** - Using the fetch function (coupled with async or React.useEffect), this is accomplished.
 
 ### Login Deliverable
-- [] **FIX SIMON IN PRODUCTION**
+For this deliverable logins, buying, and selling have been updated using MongoDB
+- [x] **MongoDB Atlas Database** - Created.
+- [x] **Stores data in MongoDB** - Yes. Stocks and user information.
+- [x] **User Registration** - Creates new accounts, and uses `bcrypt` to hash the passwords
+- [x] **Existing Users** - Uses `bcrypt` and `MongoDB` to check if a user already exists.
+- [x] **Use MongoDB to Store Credentials** - Stores both users, and their stocks
+- [x] **Restricts Functionality** - If a user is not signed in, or doesn't own a particular stock, they will be denied access into the website or from selling that particular stock. 

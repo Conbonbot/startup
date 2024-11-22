@@ -76,7 +76,7 @@ function CurrentStocks(stocks) {
   const stockRows = [];
   if(stocks.stocks.length) {
     stocks.stocks.forEach(stock => {
-      let dif = 0;
+      let dif = 0.00;
       for(const [index, realStock] of realStocks.entries()){
         if(realStock.symbol === stock.ticker){
           dif = (parseFloat(stock.price)-parseFloat(realStock.price)).toFixed(2);
