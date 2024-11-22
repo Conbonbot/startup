@@ -4,3 +4,6 @@
 [submodule "simon-service"]
 	path = simon-service
 	url = https://github.com/webprogramming260/simon-service
+[submodule "simon-login"]
+	path = simon-login
+	url = https://github.com/webprogramming260/simon-login

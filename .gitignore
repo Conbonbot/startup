@@ -1,3 +1,4 @@
 Aws-key.pem
 FMP_key.pem
 node_modules
+**/dbConfig.json

@@ -16,7 +16,7 @@ export function Trade(props){
       fetch('/api/stocks', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({userName: userName}),
+        body: JSON.stringify({email: userName}),
       })
       .then((response) => response.json())
       .then((stocks) => {
@@ -76,7 +76,7 @@ function CurrentStocks(stocks) {
   const stockRows = [];
   if(stocks.stocks.length) {
     stocks.stocks.forEach(stock => {
-      let dif;
+      let dif = 0;
       for(const [index, realStock] of realStocks.entries()){
         if(realStock.symbol === stock.ticker){
           dif = (parseFloat(stock.price)-parseFloat(realStock.price)).toFixed(2);
@@ -141,7 +141,7 @@ function Stocks(user) {
       const response = await fetch('/api/buy', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({userName: user.userName, ticker: ticker, amount: amount}),
+        body: JSON.stringify({email: user.userName, ticker: ticker, amount: amount}),
       });
       const body = await response.json();
       setMessage(body.message);
@@ -152,7 +152,7 @@ function Stocks(user) {
       const response = await fetch('/api/sell', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({userName: user.userName, ticker: ticker, amount: amount}),
+        body: JSON.stringify({email: user.userName, ticker: ticker, amount: amount}),
       });
       const body = await response.json();
       setMessage(body.message);

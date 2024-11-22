@@ -70,3 +70,6 @@ The following shows what has been done using Node.js, Express, and API calls
 - [x] **Calls to third party endpoints** - Using a stock trader API, buying/selling orders and market information are correctly displayed, and prevents users from inputing invalid information.
 - [x] **Backend service endpoints** - Placeholders to login that stores current users on the server (currently not encrypted with BCrypt), with endpoints for buying/selling
 - [x] **Frontend calls service endpoints** - Using the fetch function (coupled with async or React.useEffect), this is accomplished.
+
+### Login Deliverable
+- [] **FIX SIMON IN PRODUCTION**

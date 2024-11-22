@@ -12,7 +12,7 @@ export function Main(props){
       fetch('/api/stocks', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({userName: userName}),
+        body: JSON.stringify({email: userName}),
       })
       .then((response) => response.json())
       .then((stocks) => {
@@ -39,7 +39,7 @@ export function Main(props){
     
     if(stocks.length) {
         for(const [index, stock] of stocks.entries()){
-            let dif;
+            let dif = 0;
             for(const [index, realStock] of realStocks.entries()){
               if(realStock.symbol === stock.ticker){
                 dif = (parseFloat(stock.price)-parseFloat(realStock.price)).toFixed(2);

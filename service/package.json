@@ -9,8 +9,11 @@
   "author": "Connor Harvey",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
     "express": "^4.21.1",
+    "mongodb": "^6.10.0",
     "pluralize": "^8.0.0",
     "uuid": "^11.0.3"
   }

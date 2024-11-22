@@ -1,21 +1,15 @@
+const cookieParser = require('cookie-parser');
 const express = require('express');
-// TODO: use bcrypt
-const bcrypt = require('bcryptjs');
-const saltRounds = 10;
+const app = express();
+const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const pluralize = require('pluralize')
-const app = express();
+const DB = require('./database.js');
+
+const authCookieName = 'token';
 
 const fs = require('fs');
 const key = fs.readFileSync("./FMP_key.pem", { encoding: "utf8" });
-
-
-
-
-// Stocks and users are saved in memory
-let users = {};
-let stocks = [];
-let realStocks = [];
 
 // The service port
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -26,61 +20,83 @@ app.use(express.json());
 // Serve up the front-end static content hosting
 app.use(express.static('public'));
 
+// Use the cookie parser for tracking authentication
+app.use(cookieParser());
+
+// Trust forwarded headers
+app.set('trust proxy', true);
+
 // Router
 var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
+
+// This holds real time stock data (held in an array to avoid excess API calls)
+let realStocks = [];
 
 
 // Create a new user
 apiRouter.post('/auth/create', async(req, res) => {
     const emailRegex = /^\S+@\S+\.\S+$/;
-    const user = users[req.body.email];
-    if(user) {
-        res.status(409).send({ msg: 'This user already exists'});
-    }
-    else if(!emailRegex.test(req.body.email)){
+    if(!emailRegex.test(req.body.email)){
         res.status(409).send({ msg: 'Username does not follow an email pattern'});
     }
-    else {
-        const user = { email: req.body.email, password: req.body.password, token: uuid.v4() };
-        users[user.email] = user;
-        res.send({ token: user.token });
+    if(await DB.getUser(req.body.email)){
+        res.status(409).send({ msg: 'This user already exists'});
     }
+    else {
+        const user = await DB.createUser(req.body.email, req.body.password);
+
+        setAuthCookie(res, user.token);
+
+        res.send({
+            id: user._id
+        });
+    }
+
 });
 
 
 // Login an existing user
 apiRouter.post('/auth/login', async (req, res) => {
-    const user = users[req.body.email]
-    console.log(user);
+    const user = await DB.getUser(req.body.email);
     if(user){
-        if(req.body.password === user.password){
-            user.token = uuid.v4();
-            res.send({ token: user.token });
-            
-        } else {
+        if(await bcrypt.compare(req.body.password, user.password)){
+            setAuthCookie(res, user.token);
+            res.send({ id: user._id });
+            return;
+        }
+        else {
             res.status(401).send({ msg: 'The password is incorrect'});
         }
     }
-    else {
-        res.status(401).send({ msg: 'This user does not exist' });
-    }
+    res.status(401).send({ msg: 'Unauthorized' });
     
 });
 
 // Delete a user
 apiRouter.delete('/auth/logout', (req, res) => {
-    const user = Object.values(users).find((u) => u.token === req.token);
-    if(user) {
-        delete user.token;
-    }
-    console.log(`Logging out user: ${user}`);
+    res.clearCookie(authCookieName);
     res.status(204).end();
+});
+
+// Use secureApiRouter
+const secureApiRouter = express.Router();
+apiRouter.use(secureApiRouter);
+
+secureApiRouter.use(async (req, res, next) => {
+    const authToken = req.cookies[authCookieName];
+    const user = await DB.getUserByToken(authToken);
+    if(user){
+        next();
+    }
+    else {
+        res.status(401).send({ msg: 'Unauthorized' });
+    }
 });
 
 
 // Buying order
-apiRouter.post('/buy', (req, res) => {
+apiRouter.post('/buy', async (req, res) => {
     let message = ``;
     let error = false;
     console.log(req.body);
@@ -88,7 +104,6 @@ apiRouter.post('/buy', (req, res) => {
         message = `Number has to be greater than 0`;
         error = true;
     }
-    const date = new Date().toLocaleDateString();
     let existStock = false;
     let currentPrice = -1;
     realStocks.forEach((realStock, index) => {
@@ -96,22 +111,9 @@ apiRouter.post('/buy', (req, res) => {
             currentPrice = realStock.price;
         }
     });
-    if(currentPrice != -1){
-        stocks.forEach((stock, index) => {
-            if(stock.userName === req.body.userName && stock.ticker === req.body.ticker){
-            stocks[index].amount = parseInt(stock.amount) + parseInt(req.body.amount);
-            stocks[index].price = currentPrice;
-            stocks[index].date = date;
-            existStock = true;
-            }
-        });
-        if(!existStock){
-            const order = {userName: req.body.userName, ticker: req.body.ticker, amount: req.body.amount, price: currentPrice, date: date};
-            stocks.push(order);
-        }
-        if(!error){
-            message = `${(pluralize('share', req.body.amount, true))} of ${req.body.ticker} bought successfully!`;
-        }
+    if(currentPrice != -1 && !error){
+        await DB.addStock(req.body.email, req.body.ticker, currentPrice, req.body.amount);
+        message = `${(pluralize('share', parseInt(req.body.amount), true))} of ${req.body.ticker} bought successfully!`;
     }
     else {
         error = true;
@@ -121,7 +123,7 @@ apiRouter.post('/buy', (req, res) => {
 });
 
 // Selling order
-apiRouter.post('/sell', (req, res) => {
+apiRouter.post('/sell', async (req, res) => {
     let message = ``;
     let error = false;
     console.log(req.body);
@@ -129,45 +131,28 @@ apiRouter.post('/sell', (req, res) => {
         message = `Number has to be greater than 0`;
         error = true;
     }
-    const date = new Date().toLocaleDateString();
-    let existStock = false;
-    stocks.forEach((stock, index) => {
-        if(stock.userName === req.body.userName && stock.ticker === req.body.ticker){
-            if(stock.amount < req.body.amount){
-                message = `You cannot sell more shares of ${req.body.ticker} than you owe. You can sell up to ${stock.amount} shares of this stock.`;
-                error = true;
-            }
-            else if(stock.amount === req.body.amount){
-                stocks.splice(index,1);
-                existStock = true;
-            }
-            else {
-                stocks[index].amount = parseInt(stock.amount) - parseInt(req.body.amount);
-                stocks[index].date = date;
-                existStock = true;
-            }
+    // Find stock
+    const userStock = await DB.getOneStock(req.body.email, req.body.ticker)
+    if(userStock){
+        if(userStock.amount < req.body.amount){
+            message = `You cannot sell more shares of ${req.body.ticker} than you owe. You can sell up to ${userStock.amount} shares of this stock.`;
+            error = true;
         }
-    })
-    if(!existStock){
-        message = `You do not own any stock with the name: ${req.body.ticker}.`;
+        else{
+            await DB.sellStock(req.body.email, req.body.ticker, req.body.amount);
+            message = `${(pluralize('share', parseInt(req.body.amount), true))} of ${req.body.ticker} sold successfully!`;
+        }
     }
-    error = !existStock;
-    if(!error){
-        message = `${(pluralize('share', req.body.amount, true))} of ${req.body.ticker} sold successfully!`;
+    else {
+        message = `You do not own any stock with the name: ${req.body.ticker}.`;
+        error = true;
     }
     res.send({ error: error, message: message });
 });
 
 // Display stocks
-apiRouter.post('/stocks', (req, res) => {
-    console.log(req.body);
-    let userStocks = [];
-    stocks.forEach((stock, index) => {
-        if(stock.userName === req.body.userName){
-            userStocks.push(stock);
-        }
-    });
-    console.log("Sending stocks", userStocks);
+apiRouter.post('/stocks', async (req, res) => {
+    const userStocks = await DB.getUserStocks(req.body.email);
     res.send(userStocks);
 });
 
@@ -189,9 +174,20 @@ app.use((_req, res) => {
     res.sendFile('index.html', { root: 'public' });
   });
 
-app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+// Default error handler
+app.use(function (err, req, res, next) {
+    res.status(500).send({ type: err.name, message: err.message });
 });
+
+// setAuthCookie in the HTTP response
+function setAuthCookie(res, authToken){
+    res.cookie(authCookieName, authToken, {
+        secure: true,
+        httpOnly: true,
+        sameSite: 'strict',
+    });
+}
+
 
 function updateStocks(){
     console.log("updating stocks...");
@@ -202,3 +198,7 @@ function updateStocks(){
             console.log("Current stock data has been updated!");
         })
 }
+
+app.listen(port, () => {
+    console.log(`Listening on port ${port}`);
+});
