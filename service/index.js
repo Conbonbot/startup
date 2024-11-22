@@ -96,10 +96,9 @@ secureApiRouter.use(async (req, res, next) => {
 
 
 // Buying order
-apiRouter.post('/buy', async (req, res) => {
+secureApiRouter.post('/buy', async (req, res) => {
     let message = ``;
     let error = false;
-    console.log(req.body);
     if(req.body.amount < 1){
         message = `Number has to be greater than 0`;
         error = true;
@@ -123,10 +122,9 @@ apiRouter.post('/buy', async (req, res) => {
 });
 
 // Selling order
-apiRouter.post('/sell', async (req, res) => {
+secureApiRouter.post('/sell', async (req, res) => {
     let message = ``;
     let error = false;
-    console.log(req.body);
     if(req.body.amount < 1){
         message = `Number has to be greater than 0`;
         error = true;
@@ -165,7 +163,6 @@ apiRouter.get('/load_stocks', (_req, res) => {
 // Send current (possibly outdated) stock information.
 // Only used to avoid excess API calls
 apiRouter.get('/send_stocks', (_req, res) => {
-    console.log("sending current (possibly outdated) stock data");
     res.send(realStocks);
 });
 
@@ -190,12 +187,10 @@ function setAuthCookie(res, authToken){
 
 
 function updateStocks(){
-    console.log("updating stocks...");
     fetch(`https://financialmodelingprep.com/api/v3/symbol/NASDAQ?apikey=${key}`)
         .then((response) => response.json())
         .then((data) => {
             realStocks = data;
-            console.log("Current stock data has been updated!");
         })
 }
 

@@ -46,7 +46,6 @@ async function createUser(email, password) {
 
 async function addStock(email, ticker, price, amount){
     const userStock = await stockCollection.findOne({ email: email, ticker: ticker})
-    console.log(userStock);
     if(userStock){
         const newAmount = parseInt(userStock.amount) + parseInt(amount);
         return stockCollection.updateOne(
@@ -54,7 +53,6 @@ async function addStock(email, ticker, price, amount){
             { $set: { amount: newAmount} }
         );
     }
-    console.log("User does not own this stock, creating new data");
     const date = new Date().toLocaleDateString();
     const stock = {
         email: email,
