@@ -200,8 +200,7 @@ function updateStocks(){
 
 // This updates the stock data to make it more "real-time". 
 // Due to API limits, it can only update a maximum of 250 times a day (this updates every 8 minutes)
-// TODO: '*/8 * * * *'
-const task = cron.schedule('* * * * *', () => {
+const task = cron.schedule('*/8 * * * *', () => {
     updateStocks();
     sendUpdatedStocks(realStocks);
     console.log("Stock information has been automatically updated!");
