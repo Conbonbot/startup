@@ -4,9 +4,14 @@ import './market.css';
 
 export function Market(){
 
+  // Websocket connection
+  let port = window.location.port;
+  const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+  const [socket, setSocket] = React.useState([]);
   const [stocks, setStocks] = React.useState([]);
   useEffect(() => {
-    fetch('/api/load_stocks', {
+    setSocket(new WebSocket(`${protocol}://${window.location.hostname}:${port}/ws`));
+    fetch('/api/send_stocks', {
       method: 'GET',
       headers: { 'content-type': 'application/json' },
     })
@@ -14,21 +19,59 @@ export function Market(){
     .then((stocks) => {
       setStocks(stocks);
     })
+    setPerformingStocks();
+    setUnderPerfStocks();
   }, []);
 
-  let amount = 10;
-  let performingStocks = [];
-  let underperfStocks = [];
-  let count = 0;
-  // stock.eps, stock.pe, stock.price, stock.symbol
-  stocks.forEach(stock => {
-    if(stock.changesPercentage > 10 && Math.random()*100 > 98){
-      performingStocks.push(stock);
-    }
-    if(stock.changesPercentage < -10 && Math.random()*100 > 98){
-      underperfStocks.push(stock);
-    }
-  });
+  
+  // Update stock information when it recieves a message
+  if(socket){
+    useEffect(() => {
+      socket.onmessage = async (msg) => {
+        const data = JSON.parse(await msg.data);
+        setStocks(data);
+        setPerformingStocks();
+        setUnderPerfStocks();
+      }}, [stocks]);
+  }
+
+  
+  
+  function setPerformingStocks(){
+    let performingStocks = [];
+    // stock.eps, stock.pe, stock.price, stock.symbol
+    stocks.forEach((stock, i) => {
+      if(stock.changesPercentage > 10 && Math.random()*100 > 98){
+        performingStocks.push(
+          <tr key={i}>
+            <td className='bold'>{stock.symbol}</td>
+            <td>${stock.price}</td>
+            <td className='table-success'>{stock.changesPercentage.toFixed(3)}%</td>
+            <td>{(stock.eps) ? stock.eps : `N/A`}</td>
+          </tr>
+        );
+      }
+    });
+    return performingStocks;
+  }
+
+  function setUnderPerfStocks(){
+    let underperfStocks = [];
+    stocks.forEach((stock, i) => {
+      if(stock.changesPercentage < -10 && Math.random()*100 > 98){
+        underperfStocks.push(
+          <tr key={i}>
+            <td className='bold'>{stock.symbol}</td>
+            <td>${stock.price}</td>
+            <td className='table-danger'>{stock.changesPercentage.toFixed(3)}%</td>
+            <td>{(stock.eps) ? stock.eps : `N/A`}</td>
+          </tr>
+        );
+      }
+    });
+    
+    return underperfStocks;
+  }
 
     return(
         <>
@@ -44,18 +87,7 @@ export function Market(){
                     <th>EPS</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {performingStocks.map(stock => {
-                    return(
-                      <tr>
-                        <td className='bold'>{stock.symbol}</td>
-                        <td>${stock.price}</td>
-                        <td className='table-success'>{stock.changesPercentage.toFixed(3)}%</td>
-                        <td>{stock.eps}</td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
+                <tbody id='perf-stocks'>{setPerformingStocks()}</tbody>
               </table>
             </section>
             <hr />
@@ -71,18 +103,7 @@ export function Market(){
                     <th>EPS</th>
                   </tr>
                 </thead>
-                <tbody>
-                {underperfStocks.map(stock => {
-                    return(
-                      <tr>
-                        <td className='bold'>{stock.symbol}</td>
-                        <td>${stock.price}</td>
-                        <td className='table-danger'>{stock.changesPercentage.toFixed(3)}%</td>
-                        <td>{stock.eps}</td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
+                <tbody id='underperf-stocks'>{setUnderPerfStocks()}</tbody>
               </table>
             </section>
           </main>

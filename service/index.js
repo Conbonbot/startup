@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const pluralize = require('pluralize')
 const DB = require('./database.js');
+const { liveDataProxy, sendUpdatedStocks } = require('./liveDataProxy.js');
+const cron = require('node-cron');
 
 const authCookieName = 'token';
 
@@ -79,6 +81,24 @@ apiRouter.delete('/auth/logout', (req, res) => {
     res.status(204).end();
 });
 
+// Display stocks
+apiRouter.post('/stocks', async (req, res) => {
+    const userStocks = await DB.getUserStocks(req.body.email);
+    res.send(userStocks);
+});
+
+// Force stock information to update
+apiRouter.get('/force_update', (_req, res) => {
+    updateStocks();
+    console.log("Forced stock update");
+    res.send(realStocks);
+});
+
+// Send current stock information.
+apiRouter.get('/send_stocks', (_req, res) => {
+    res.send(realStocks);
+});
+
 // Use secureApiRouter
 const secureApiRouter = express.Router();
 apiRouter.use(secureApiRouter);
@@ -148,23 +168,6 @@ secureApiRouter.post('/sell', async (req, res) => {
     res.send({ error: error, message: message });
 });
 
-// Display stocks
-apiRouter.post('/stocks', async (req, res) => {
-    const userStocks = await DB.getUserStocks(req.body.email);
-    res.send(userStocks);
-});
-
-// Update stock information
-apiRouter.get('/load_stocks', (_req, res) => {
-    updateStocks();
-    res.send(realStocks);
-});
-
-// Send current (possibly outdated) stock information.
-// Only used to avoid excess API calls
-apiRouter.get('/send_stocks', (_req, res) => {
-    res.send(realStocks);
-});
 
 
 app.use((_req, res) => {
@@ -194,6 +197,20 @@ function updateStocks(){
         })
 }
 
-app.listen(port, () => {
+
+// This updates the stock data to make it more "real-time". 
+// Due to API limits, it can only update a maximum of 250 times a day (this updates every 8 minutes)
+// TODO: '*/8 * * * *'
+const task = cron.schedule('* * * * *', () => {
+    updateStocks();
+    sendUpdatedStocks(realStocks);
+    console.log("Stock information has been automatically updated!");
+}, {
+    scheduled: false,
+});
+task.start();
+
+const httpService = app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
+liveDataProxy(httpService);

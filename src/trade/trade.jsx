@@ -7,6 +7,7 @@ import { TradeDialog } from './tradeDialog';
 import './trade.css';
 
 
+// Inital layout
 export function Trade(props){
 
     const userName = props.userName;
@@ -23,9 +24,6 @@ export function Trade(props){
         setStocks(stocks);
       })
     }, []);
-
-    
-
 
     if (props.userName){
       return (
@@ -59,10 +57,18 @@ export function Trade(props){
     
 }
 
+
+// Stock information
 function CurrentStocks(stocks) {
 
+  let port = window.location.port;
+  const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+  const [socket, setSocket] = React.useState([]);
   const [realStocks, setRealStocks] = useState([]);
+
+  // Get real-time stock data & initalize webSocket
   useEffect(() => {
+    setSocket(new WebSocket(`${protocol}://${window.location.hostname}:${port}/ws`));
     fetch('/api/send_stocks', {
       method: 'GET',
       headers: { 'content-type': 'application/json' },
@@ -72,30 +78,43 @@ function CurrentStocks(stocks) {
       setRealStocks(realStocks);
     })
   }, []);
-  
-  const stockRows = [];
-  if(stocks.stocks.length) {
+
+  // Websocket -> updates current stock information
+  if(socket){
+    useEffect(() => {
+      socket.onmessage = async (msg) => {
+        const data = JSON.parse(await msg.data);
+        setRealStocks(data);
+        createStockRows(stocks.stocks);
+      }}, [realStocks]);
+  }
+
+  function createStockRows(){
+    const stockRows = []
     stocks.stocks.forEach(stock => {
-      let dif = 0.00;
       for(const [index, realStock] of realStocks.entries()){
         if(realStock.symbol === stock.ticker){
-          dif = (parseFloat(stock.price)-parseFloat(realStock.price)).toFixed(2);
+          let dif = (parseFloat(stock.price)-parseFloat(realStock.price)).toFixed(2);
+          stockRows.push(
+              <tr key={index}>
+                <td className='bold'>{stock.ticker}</td>
+                <td>{stock.amount}</td>
+                <td>{(realStock.price).toFixed(2)}</td>
+                {dif > 0 ? (
+                  <td className='table-success'>{dif}</td>
+                ) : (
+                  <td className='table-danger'>{dif}</td>
+                )}
+              </tr>
+          );
           break;
         }
       }
-      stockRows.push(
-          <tr>
-            <td className='bold'>{stock.ticker}</td>
-            <td>{stock.amount}</td>
-            <td>{(stock.price*stock.amount).toFixed(2)}</td>
-            {dif > 0 ? (
-              <td className='table-success'>{dif}</td>
-            ) : (
-              <td className='table-danger'>{dif}</td>
-            )}
-          </tr>
-      );
     });
+    return stockRows;
+  }
+  
+  if(stocks.stocks.length) {
     return (
       <>
         <section className="current-stocks">
@@ -105,11 +124,11 @@ function CurrentStocks(stocks) {
               <tr className='bold table-primary'>
                 <th>Stock</th>
                 <th>Shares</th>
-                <th>Price ($)</th>
+                <th>Price per share ($)</th>
                 <th>Profit ($)</th>
               </tr>
               </thead>
-              <tbody id='stocks'>{stockRows}</tbody>
+              <tbody id='stocks'>{createStockRows()}</tbody>
             </table>
           </section>
       </>
@@ -126,9 +145,7 @@ function CurrentStocks(stocks) {
 }
 
 
-
-
-
+// Buying/selling stocks
 function Stocks(user) {
     const [ticker, setTicker] = useState('');
     const [amount, setAmount] = useState(null);
@@ -159,9 +176,6 @@ function Stocks(user) {
       setError(body.error);
     }
 
-
-
-    
 
     return (
       <>
