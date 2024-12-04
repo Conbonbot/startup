@@ -19,10 +19,10 @@ function liveDataProxy(httpServer){
         // Remove closed connection
         ws.on('close', () => {
             const pos = connections.findIndex((o, i) => o.id === connection.id);
-
             if (pos >= 0){
                 connections.splice(pos,1);
             }
+            console.log("disconnected");
         });
 
         // Respond to pong messages by marking the connection alive
@@ -36,7 +36,6 @@ function liveDataProxy(httpServer){
         connections.forEach((c) => {
             if(!c.alive){
                 c.ws.terminate();
-                console.log("connection terminated");
             }
             else {
                 c.alive = false;

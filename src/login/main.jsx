@@ -86,7 +86,7 @@ export function Main(props){
             <tr key={stocks.length+1} className='table-primary'>
               <td className='bold' colSpan='2'>Summary</td>
               <td>{totalShares}</td>
-              <td>{totalPrice}</td>
+              <td>{totalPrice.toFixed(3)}</td>
               {totalProfit > 0 ? (
                 <td className='table-success'>{totalProfit}</td>
               ) : (
@@ -98,7 +98,7 @@ export function Main(props){
       } else {
           stockRows.push(
               <tr key='0'>
-                  <td colSpan='5'>Start Trading!</td>
+                  <td colSpan='6'>Start Trading!</td>
               </tr>
           );
       }

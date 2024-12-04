@@ -79,3 +79,10 @@ For this deliverable logins, buying, and selling have been updated using MongoDB
 - [x] **Existing Users** - Uses `bcrypt` and `MongoDB` to check if a user already exists.
 - [x] **Use MongoDB to Store Credentials** - Stores both users, and their stocks
 - [x] **Restricts Functionality** - If a user is not signed in, or doesn't own a particular stock, they will be denied access into the website or from selling that particular stock. 
+
+### WebSocket Deliverable
+This deliverable has included the following
+- [x] **Backend listens for WebSocket connections** - Done.
+- [x] **Frontend makes WebSocket connection** - Done.
+- [x] **Data sent over WebSocket connection** - Done
+- [x] **WebSocket data displayed** - All current stock information is shown in "realtime", being every 8 minutes. Due to the 250 maximum API calls a day on the FMP API I use, This is the most frequently it can update stock information without exceeding the daily limit. Therefore, every 8 minutes each table updates with the most up-to-date information.

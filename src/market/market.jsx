@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Button from 'react-bootstrap/Button';
 import './market.css';
 
 
@@ -35,6 +36,13 @@ export function Market(){
       }}, [stocks]);
   }
 
+  // This forces an API call through the WebSocket and updates all data
+  function forceUpdate(){
+    fetch('/api/force_update', {
+      method: 'GET',
+      headers: { 'content-type': 'application/json' },
+    })
+  }
   
   
   function setPerformingStocks(){
@@ -46,7 +54,7 @@ export function Market(){
           <tr key={i}>
             <td className='bold'>{stock.symbol}</td>
             <td>${stock.price}</td>
-            <td className='table-success'>{stock.changesPercentage.toFixed(3)}%</td>
+            <td className='table-success'>{stock.changesPercentage.toFixed(2)}%</td>
             <td>{(stock.eps) ? stock.eps : `N/A`}</td>
           </tr>
         );
@@ -63,7 +71,7 @@ export function Market(){
           <tr key={i}>
             <td className='bold'>{stock.symbol}</td>
             <td>${stock.price}</td>
-            <td className='table-danger'>{stock.changesPercentage.toFixed(3)}%</td>
+            <td className='table-danger'>{stock.changesPercentage.toFixed(2)}%</td>
             <td>{(stock.eps) ? stock.eps : `N/A`}</td>
           </tr>
         );
@@ -76,7 +84,9 @@ export function Market(){
     return(
         <>
           <main className="container-fluid bg-secondary text-center">
-            <h1>Below are some of the best performing stocks from the NASDAQ </h1>
+            <h1>Below are some of the best and worst performing stocks on the NASDAQ from the week</h1>
+            <h4>Note: The stocks on these lists are randomized every 8 minutes.</h4>
+            <h4>They can also be forced to update by using the button at the bottom of the screen</h4>
             <section className="weekly-performers">
               <table className="table table-striped table-bordered">
                 <thead className="thread-dark">
@@ -91,8 +101,6 @@ export function Market(){
               </table>
             </section>
             <hr />
-            <h1>Below are the some of the worst performing stocks on the NASDAQ</h1>
-            <hr />
             <section className="weekly-worst">
               <table className="table table-striped table-bordered">
                 <thead className="thread-dark">
@@ -106,6 +114,10 @@ export function Market(){
                 <tbody id='underperf-stocks'>{setUnderPerfStocks()}</tbody>
               </table>
             </section>
+            <div className="col-12">
+              <h6>Wait around 20-30 seconds after pressing the button for the changes to take place.</h6>
+              <Button className='btn btn-primary' onClick={() => forceUpdate()} disabled={!socket} >Force Update</Button>
+            </div>
           </main>
           
         </>

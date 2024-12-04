@@ -89,9 +89,9 @@ apiRouter.post('/stocks', async (req, res) => {
 
 // Force stock information to update
 apiRouter.get('/force_update', (_req, res) => {
+    console.log("forcing update");
     updateStocks();
-    console.log("Forced stock update");
-    res.send(realStocks);
+    sendUpdatedStocks(realStocks);
 });
 
 // Send current stock information.
@@ -190,6 +190,7 @@ function setAuthCookie(res, authToken){
 
 
 function updateStocks(){
+    console.log("API Call to update stocks");
     fetch(`https://financialmodelingprep.com/api/v3/symbol/NASDAQ?apikey=${key}`)
         .then((response) => response.json())
         .then((data) => {
@@ -213,3 +214,30 @@ const httpService = app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
 liveDataProxy(httpService);
+
+/*
+    {
+        "symbol": "ZJK",
+        "name": "ZJK Industrial Co., Ltd.",
+        "price": 17.26,
+        "changesPercentage": 172.2397,
+        "change": 10.92,
+        "dayLow": 11.52,
+        "dayHigh": 30.4999,
+        "yearHigh": 30.4999,
+        "yearLow": 4,
+        "marketCap": 449831501,
+        "priceAvg50": 5.0567555,
+        "priceAvg200": 5.0567555,
+        "exchange": "NASDAQ",
+        "volume": 27893461,
+        "avgVolume": 109488,
+        "open": 18.2,
+        "previousClose": 6.34,
+        "eps": 0.13,
+        "pe": 132.77,
+        "earningsAnnouncement": null,
+        "sharesOutstanding": 26062080,
+        "timestamp": 1733259600
+    }
+*/
