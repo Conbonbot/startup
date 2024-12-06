@@ -85,4 +85,4 @@ This deliverable has included the following
 - [x] **Backend listens for WebSocket connections** - Done.
 - [x] **Frontend makes WebSocket connection** - Done.
 - [x] **Data sent over WebSocket connection** - Done
-- [x] **WebSocket data displayed** - All current stock information is shown in "realtime", being every 8 minutes. Due to the 250 maximum API calls a day on the FMP API I use, This is the most frequently it can update stock information without exceeding the daily limit. Therefore, every 8 minutes each table updates with the most up-to-date information.
+- [x] **WebSocket data displayed** - All current stock information is shown in "realtime", being every hour. Due to the 250 maximum API calls a day on the FMP API I use and total data usage, This is the most frequently it can update stock information without exceeding the daily limit.

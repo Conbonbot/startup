@@ -88,9 +88,9 @@ export function Main(props){
               <td>{totalShares}</td>
               <td>{totalPrice.toFixed(3)}</td>
               {totalProfit > 0 ? (
-                <td className='table-success'>{totalProfit}</td>
+                <td className='table-success'>{totalProfit.toFixed(3)}</td>
               ) : (
-                <td className='table-danger'>{totalProfit}</td>
+                <td className='table-danger'>{totalProfit.toFixed(3)}</td>
               )}
               <td>{(parseFloat(totalProfit)/parseFloat(totalPrice)).toFixed(3)}%</td>
             </tr>
