@@ -85,7 +85,7 @@ export function Market(){
         <>
           <main className="container-fluid bg-secondary text-center">
             <h1>Below are some of the best and worst performing stocks on the NASDAQ from the week</h1>
-            <h4>Note: The stocks on these lists are randomized every 8 minutes.</h4>
+            <h4>Note: The stocks are randomized and updated every hour.</h4>
             <h4>They can also be forced to update by using the button at the bottom of the screen</h4>
             <section className="weekly-performers">
               <table className="table table-striped table-bordered">
