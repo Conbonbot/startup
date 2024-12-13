@@ -204,6 +204,37 @@ Below are API request methods
 * **CONNECT** - establishes a network connection to a resource, typically used for SSL/TLS tunneling
 * **TRACE** - echoes the received request back to the client, for debugging purposes
 
+### MongoDB
+All code contains `db.collection('database')` before it
+* **Queries** - use `.find({})` to select all. `.find({'key': 'value'})`.
+```js
+const cursor = db.collection('inventory').find({
+  status: { $in: ['A', 'D'] }
+});
+```
+Retrieves all documents where status equals either A or D
+```js
+const cursor = db.collection('inventory').find({
+  status: 'A',
+  qty: { $lt: 30 }
+});
+```
+Retrieves all documents where status equals "A" and qty is less than ($lt) 30 
+```js
+const cursor = db.collection('inventory').find({
+  $or: [{ status: 'A' }, { qty: { $lt: 30 } }]
+});
+```
+Or instruction
+
+### React
+* **-useState** - Add a state variable (object that stores data that can be modifed over time) to your component.
+* **State Hook** - State lets a component “remember” information like user input. For example, a form component can use state to store the input value, while an image gallery component can use state to store the selected image index.
+* **Context Hook** - Context lets a component receive information from distant parents without passing it as props. For example, your app’s top-level component can pass the current UI theme to all components below, no matter how deep.
+* **Ref Hook** - Refs let a component hold some information that isn’t used for rendering, like a DOM node or a timeout ID. Unlike with state, updating a ref does not re-render your component. Refs are an “escape hatch” from the React paradigm. They are useful when you need to work with non-React systems, such as the built-in browser APIs.
+* **Effect Hook** - Effects let a component connect to and synchronize with external systems. This includes dealing with network, browser DOM, animations, widgets written using a different UI library, and other non-React code.
+* **Performance Hook** - A common way to optimize re-rendering performance is to skip unnecessary work. For example, you can tell React to reuse a cached calculation or to skip a re-render if the data has not changed since the previous render.
+
 ### Other
 
 * **Domains** - A domain name is simply a text string that follows a specific naming convention and is listed in a special database called the domain name registry. Broken up into a root domain, with one or more possible subdomains prefixes. The root domain is represented by a secondary level domain and a top level domain (e.g. `.com`)
@@ -212,6 +243,13 @@ Example `https://www.shop.example.com` | `https://` -> Protocol | `www.` -> subd
 * **HTTPS** - HTTPS: Most crucially for businesses, an SSL certificate is necessary for an HTTPS web address. HTTPS is the secure form of HTTP, and HTTPS websites are websites that have their traffic encrypted by SSL/TLS.
 * **DNS A record** -  A DNS A record is the most fundamental type of DNS record. The A stands for “Address,” and it’s used to point a domain name to an IP address or host. You can only use an A record when you want to point to an IPv4 address. An AAAA record is required if you wish to direct your domain to an IPv6 address. 
 * **Ports** - `443` is used for HTTPS, `80` for HTTP, `22` for SSH
-
-
-
+* **Status Code** - 300 is redirection, 400 is client error, 500 is server error
+* **Content-type** - indictate the original media type of a resource before any content encoding is applied. Used for POST and PUT.
+* **Cookies** - Secure cookies are sent over a secure HTTPS connection, preventing eavesdropping. Same-site cookies would only send cookies to a target domain that is the same as the origin domain. 
+* **Websocket** - Enables a two-way connection between a web browser (client) and a web server
+* **Acronyms** - JSX -> JavaScript XML. JS -> JavaScript. AWS -> Amazon Web Services. NPM -> Node Package Manager. NVM -> Node Version Manager
+* **Package.json** - Holds important information about a project (name, description, version number and list of dependencies).
+* **Fetch** - The fetch() method of the Window interface starts the process of fetching a resource from the network, returning a promise that is fulfilled once the response is available. The promise resolves to the Response object representing the response to your request.
+* **Node.js** - Executes JS code outside of a browser. Can run HTTP applications written in JS. 
+* **pm2** - Process manager for Node.js applications. Keeps applications running, manages applications, centralizes logging, supports load balancing, scales application.
+* **Vite** - Modern JS build tool that primarily serves your code locally during development using native ES modules. Rapid development with quick refresh times and efficient production output.
